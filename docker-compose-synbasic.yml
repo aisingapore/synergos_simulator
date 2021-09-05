@@ -1,0 +1,126 @@
+version: '3.5'
+
+services:
+
+  ###############
+  # Single Grid #
+  ###############
+
+  synergos_ttp_basic:
+    build:
+      context: ./synergos_ttp
+      dockerfile: Dockerfile
+      target: basic_ttp
+    image: synergos_ttp:synbasic
+    container_name: synb_ttp
+    command: --logging_variant graylog 127.0.0.1 9400
+    volumes:
+      - ./metadata/orchestrator_data/:/orchestrator/data
+      - ./metadata/mlflow_data/:/mlflow
+      - ./outputs/orchestrator_outputs/:/orchestrator/outputs
+    ports:
+      - 5000:5000
+      - 5678:5678
+      - 8020:8020
+      - 8080:8080
+    depends_on:
+      - synergos_worker_1
+      - synergos_worker_2
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 20
+    networks:
+      synergos_basic:
+        ipv4_address: 172.18.0.2
+
+  synergos_worker_1:
+    build:
+      context: ./synergos_worker
+      dockerfile: Dockerfile
+    image: synergos_worker:synbasic
+    container_name: synb_worker_1
+    command: --logging_variant graylog 172.20.0.14 9100
+    volumes:
+      - ./datasets/:/worker/data
+      - ./outputs/worker_1_outputs/:/worker/outputs
+    ports:
+      - 5001:5000
+      - 8021:8020
+    networks:
+      synergos_basic:
+        ipv4_address: 172.18.0.3
+
+  synergos_worker_2:
+    build:
+      context: ./synergos_worker
+      dockerfile: Dockerfile
+    image: synergos_worker:synbasic
+    container_name: synb_worker_2
+    command: --logging_variant graylog 127.0.0.1 9400
+    volumes:
+      - ./datasets/:/worker/data
+      - ./outputs/worker_2_outputs/:/worker/outputs
+    ports:
+      - 5002:5000
+      - 8022:8020
+    networks:
+      synergos_basic:
+        ipv4_address: 172.18.0.4
+
+  #######################
+  # Optional Components #
+  #######################
+
+  synergos_ui_nav:
+    build:
+      context: ./synergos_ui/synui_nav
+      dockerfile: Dockerfile_nav
+    image: synergos_ui:nav
+    container_name: synb_synui_nav
+    environment:
+      VIEW_HOST: localhost
+      VIEW_PORT: 4001
+    ports:
+      - 4000:4000
+    depends_on:
+      - synergos_ui_view
+    networks:
+      synergos_basic:
+        ipv4_address: 172.18.0.5
+
+  synergos_ui_view:
+    build:
+      context: ./synergos_ui
+      dockerfile: ./synui_view/Dockerfile_view
+    image: synergos_ui:view
+    container_name: synb_synui_view
+    environment:
+      TRACK_HOST: localhost
+      TRACK_PORT: 4002
+    ports:
+      - 4001:4000
+    depends_on:
+      - synergos_ui_track
+    networks:
+      synergos_basic:
+        ipv4_address: 172.18.0.6
+
+  synergos_ui_track:
+    build:
+      context: ./synergos_ui/synui_track
+      dockerfile: Dockerfile_track
+    image: synergos_ui:track
+    container_name: synb_synui_track
+    ports:
+      - 4002:4000
+    networks:
+      synergos_basic:
+        ipv4_address: 172.18.0.7
+
+networks:
+  synergos_basic:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.18.0.0/24"

@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  worker_1:
+    image: registry.aisingapore.net/fedlearn/synergos_worker:syn0.5
+    container_name: worker_1
+    command: --logging_variant graylog 127.0.0.1 9400
+    volumes:
+      - /Users/yoke/code/FL/FLData/tabular/heart_disease/data1:/worker/data
+      - /Users/yoke/code/FL/FLOutputs/heart_disease_gkt/outputs_1:/worker/outputs
+
+  worker_2:
+    image: registry.aisingapore.net/fedlearn/synergos_worker:syn0.5
+    container_name: worker_2
+    command: --logging_variant graylog 127.0.0.1 9400
+    volumes:
+      - /Users/yoke/code/FL/FLData/tabular/heart_disease/data2:/worker/data
+      - /Users/yoke/code/FL/FLOutputs/heart_disease_gkt/outputs_2:/worker/outputs
+
+  basic_ttp:
+    image: registry.aisingapore.net/fedlearn/synergos_ttp:syn0.7
+    command: --logging_variant graylog 127.0.0.1 9400
+    volumes:
+      - /Users/yoke/code/FL/FLOutputs/heart_disease_gkt/ttp_data:/ttp/data
+      - /Users/yoke/code/FL/FLOutputs/heart_disease_gkt/ttp_outputs:/ttp/outputs
+      - /Users/yoke/code/FL/FLOutputs/heart_disease_gkt/mlflow_test:/ttp/mlflow
+    ports:
+      - 5000:5000
+      - 5678:5678
+      - 8020:8020
+      - 8080:8080
+    depends_on:
+      - worker_1
+      - worker_2
+
+  synui_track:
+    build:
+      context: ./repos/synergos_ui/synui_track
+      dockerfile: Dockerfile_track
+    image: synergos_ui:track
+    ports:
+      - 4002:4000
+    depends_on:
+      - basic_ttp
+
+  synui_view:
+    build:
+      context: ./repos/synergos_ui
+      dockerfile: ./synui_view/Dockerfile_view
+    image: synergos_ui:view
+    environment:
+      TRACK_HOST: localhost
+      TRACK_PORT: 4002
+    ports:
+      - 4001:4000
+    depends_on:
+      - synui_track
+
+  synui_nav:
+    build:
+      context: ./repos/synergos_ui/synui_nav
+      dockerfile: Dockerfile_nav
+    image: synergos_ui:nav
+    environment:
+      VIEW_HOST: localhost
+      VIEW_PORT: 4001
+    ports:
+      - 4000:4000
+    depends_on:
+      - synui_view
+

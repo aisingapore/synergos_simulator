@@ -1,0 +1,16 @@
+{
+    "age": "int32",
+    "sex": "category", 
+    "cp": "category", 
+    "trestbps": "int32", 
+    "chol": "int32", 
+    "fbs": "category", 
+    "restecg": "category", 
+    "thalach": "int32", 
+    "exang": "category", 
+    "oldpeak": "float64", 
+    "slope": "category", 
+    "ca": "category", 
+    "thal": "category", 
+    "target": "category"
+}

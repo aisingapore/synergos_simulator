@@ -1,0 +1,12 @@
+{
+    "sex": "category",
+    "length": "float64", 
+    "diameter": "float64", 
+    "height": "float64", 
+    "whole_weight": "float64", 
+    "shucked_weight": "float64", 
+    "viscera_weight": "float64", 
+    "shell_weight": "float64", 
+    "target": "float64"
+}
+

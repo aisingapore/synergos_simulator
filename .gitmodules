@@ -1,0 +1,21 @@
+[submodule "synergos_ui"]
+	path = synergos_ui
+	url = ../synergos_ui.git
+[submodule "synergos_director"]
+	path = synergos_director
+	url = ../synergos_director.git
+[submodule "synergos_logger"]
+	path = synergos_logger
+	url = ../synergos_logger.git
+[submodule "synergos_mlops"]
+	path = synergos_mlops
+	url = ../synergos_mlops.git
+[submodule "synergos_ttp"]
+	path = synergos_ttp
+	url = ../synergos_ttp.git
+[submodule "synergos_worker"]
+	path = synergos_worker
+	url = ../synergos_worker.git
+[submodule "synergos"]
+	path = synergos
+	url = https://gitlab.int.aisingapore.org/aims/federatedlearning/synergos.git
