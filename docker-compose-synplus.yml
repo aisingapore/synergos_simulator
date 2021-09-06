@@ -13,7 +13,7 @@ services:
       target: basic_ttp
     image: synergos_ttp:synplus
     container_name: synp_ttp
-    command: --logging_variant graylog 172.19.0.14 9300
+    command: --logging_variant graylog 172.19.0.10 9300
     volumes:
       - ./metadata/orchestrator_data/:/orchestrator/data
       - ./metadata/mlflow_data/:/mlflow
@@ -41,13 +41,15 @@ services:
       dockerfile: Dockerfile
     image: synergos_worker:synplus
     container_name: synp_worker_1
-    command: --logging_variant graylog 172.19.0.14 9400
+    command: --logging_variant graylog 172.19.0.10 9400
     volumes:
       - ./datasets/:/worker/data
       - ./outputs/worker_1_outputs/:/worker/outputs
     ports:
       - 5001:5000
       - 8021:8020
+    depends_on:
+      - synergos_logger
     networks:
       synergos_plus:
         ipv4_address: 172.19.0.3
@@ -58,13 +60,15 @@ services:
       dockerfile: Dockerfile
     image: synergos_worker:synplus
     container_name: synp_worker_2
-    command: --logging_variant graylog 127.0.0.1 9400
+    command: --logging_variant graylog 172.19.0.10 9400
     volumes:
       - ./datasets/:/worker/data
       - ./outputs/worker_2_outputs/:/worker/outputs
     ports:
       - 5002:5000
       - 8022:8020
+    depends_on:
+      - synergos_logger
     networks:
       synergos_plus:
         ipv4_address: 172.19.0.4

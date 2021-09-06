@@ -13,7 +13,7 @@ services:
       target: basic_ttp
     image: synergos_ttp:synbasic
     container_name: synb_ttp
-    command: --logging_variant graylog 127.0.0.1 9400
+    command: --logging_variant graylog 127.0.0.1 9300
     volumes:
       - ./metadata/orchestrator_data/:/orchestrator/data
       - ./metadata/mlflow_data/:/mlflow
@@ -40,7 +40,7 @@ services:
       dockerfile: Dockerfile
     image: synergos_worker:synbasic
     container_name: synb_worker_1
-    command: --logging_variant graylog 172.20.0.14 9100
+    command: --logging_variant graylog 127.0.0.1 9400
     volumes:
       - ./datasets/:/worker/data
       - ./outputs/worker_1_outputs/:/worker/outputs
