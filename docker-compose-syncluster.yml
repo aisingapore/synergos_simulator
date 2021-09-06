@@ -19,7 +19,7 @@ services:
       - synergos_ttp_2
     volumes:
       - ./metadata/orchestrator_data/:/orchestrator/data
-      - ./metadata/mlflow_test/:/mlflow
+      - ./metadata/mlflow_data/:/mlflow
       - ./outputs/orchestrator_outputs/:/orchestrator/outputs
     networks:
       synergos_cluster:
@@ -295,7 +295,7 @@ services:
     ports:
       - 5500:5500
     volumes:
-      - /home/aisg/Desktop/synergos_demos/mlflow_test/:/mlflow
+      - ./metadata/mlflow_data/:/mlflow
     networks:
       synergos_cluster:
         ipv4_address: 172.20.0.15
