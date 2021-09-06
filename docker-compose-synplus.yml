@@ -13,7 +13,7 @@ services:
       target: basic_ttp
     image: synergos_ttp:synplus
     container_name: synp_ttp
-    command: --logging_variant graylog 172.19.0.10 9300 --logging_resolution 5 --cpus 4
+    command: -i synp_ttp -l graylog 172.19.0.10 9300 -r 5 --cpus 4
     volumes:
       - ./metadata/orchestrator_data/:/orchestrator/data
       - ./metadata/mlflow_data/:/mlflow
@@ -41,7 +41,7 @@ services:
       dockerfile: Dockerfile
     image: synergos_worker:synplus
     container_name: synp_worker_1
-    command: --logging_variant graylog 172.19.0.10 9400 --logging_resolution 5 --cpus 4
+    command: -i synp_worker_1 -l graylog 172.19.0.10 9400 -r 5 --cpus 4
     volumes:
       - ./datasets/:/worker/data
       - ./outputs/worker_1_outputs/:/worker/outputs
@@ -60,7 +60,7 @@ services:
       dockerfile: Dockerfile
     image: synergos_worker:synplus
     container_name: synp_worker_2
-    command: --logging_variant graylog 172.19.0.10 9400 --logging_resolution 5 --cpus 4
+    command: -i synp_worker_2 -l graylog 172.19.0.10 9400 -r 5 --cpus 4
     volumes:
       - ./datasets/:/worker/data
       - ./outputs/worker_2_outputs/:/worker/outputs
