@@ -7,67 +7,62 @@ services:
      context: ./synergos_director
      dockerfile: Dockerfile
     image: synergos_director:syncluster
-    container_name: synergos_director
-    command: --logging_variant graylog 172.20.0.14 9100 --queue rabbitmq 172.20.0.15 5672
+    container_name: sync_director
+    command: -i sync_director -mq rabbitmq 172.20.0.16 5672 -l graylog 172.20.0.14 9200 -r 5 --cpus 2
     ports:
       - 5000:5000
-      - 5678:5678
-      - 8020:8020
-      - 8080:8080
     depends_on:
       - synergos_mq
       - synergos_logger
       - synergos_mlops
-      - ttp_1
-      - ttp_2
+      - synergos_ttp_1
+      - synergos_ttp_2
     volumes:
       - ./metadata/orchestrator_data/:/orchestrator/data
       - ./metadata/mlflow_test/:/mlflow
       - ./outputs/orchestrator_outputs/:/orchestrator/outputs
     networks:
-      synergos:
+      synergos_cluster:
         ipv4_address: 172.20.0.2
 
   ##########
   # GRID 1 #
   ##########
 
-  ttp_1:
+  synergos_ttp_1:
     build:
       context: ./synergos_ttp
       dockerfile: Dockerfile
       target: syncluster_ttp
     image: synergos_ttp:syncluster
-    container_name: ttp_1
-    command: --logging_variant graylog 172.20.0.14 9100 --queue rabbitmq 172.20.0.15 5672
+    container_name: sync_ttp_1
+    command: -i sync_ttp_1 -g 0 -mq rabbitmq 172.20.0.16 5672 -l graylog 172.20.0.14 9300 -r 5 --cpus 2
     volumes:
       - ./metadata/orchestrator_data/:/orchestrator/data
       - ./outputs/orchestrator_outputs/:/orchestrator/outputs
     ports:
       - 6000:5000
-      - 6678:5678
       - 9020:8020
-      - 9080:8080
     depends_on:
       - synergos_mq
       - synergos_logger
-      - worker_1_node_1
-      - worker_2_node_1
+      - synergos_worker_1_node_1
+      - synergos_worker_2_node_1
     deploy:
       restart_policy:
         condition: on-failure
         max_attempts: 20
     networks:
-      synergos:
+      synergos_cluster:
         ipv4_address: 172.20.0.3
 
-  worker_1_node_1:
+  synergos_worker_1_node_1:
     build:
       context: ./synergos_worker
       dockerfile: Dockerfile
     image: synergos_worker:syncluster
-    container_name: worker_1_node_1
-    command: --logging_variant graylog 172.20.0.14 9100
+    container_name: sync_worker_1_n1
+    command: -i sync_worker_1_n1 -l graylog 172.20.0.14 9400 -r 5 --cpus 2
     volumes:
       - ./datasets/:/worker/data
       - ./outputs/worker_1_outputs/:/worker/outputs
@@ -77,16 +72,16 @@ services:
     depends_on:
       - synergos_logger
     networks:
-      synergos:
+      synergos_cluster:
         ipv4_address: 172.20.0.4
 
-  worker_2_node_1:
+  synergos_worker_2_node_1:
     build:
       context: ./synergos_worker
       dockerfile: Dockerfile
     image: synergos_worker:syncluster
-    container_name: worker_2_node_1
-    command: --logging_variant graylog 172.20.0.14 9100
+    container_name: sync_worker_2_n1
+    command: -i sync_worker_2_n1 -l graylog 172.20.0.14 9400 -r 5 --cpus 2
     volumes:
       - ./datasets/:/worker/data
       - ./outputs/worker_2_outputs/:/worker/outputs
@@ -96,48 +91,47 @@ services:
     depends_on:
       - synergos_logger
     networks:
-      synergos:
+      synergos_cluster:
         ipv4_address: 172.20.0.5
 
   ##########
   # GRID 2 #
   ##########
 
-  ttp_2:
+  synergos_ttp_2:
     build:
       context: ./synergos_ttp
       dockerfile: Dockerfile
       target: syncluster_ttp
     image: synergos_ttp:syncluster
-    container_name: ttp_2
-    command: --logging_variant graylog 172.20.0.14 9100 --queue rabbitmq 172.20.0.15 5672
+    container_name: sync_ttp_2
+    command: -i sync_ttp_2 -g 1 -mq rabbitmq 172.20.0.16 5672 -l graylog 172.20.0.14 9300 -r 5 --cpus 2
     volumes:
       - ./metadata/orchestrator_data/:/orchestrator/data
       - ./outputs/orchestrator_outputs/:/orchestrator/outputs
     ports:
       - 7000:5000
-      - 7678:5678
       - 10020:8020
-      - 10080:8080
     depends_on:
-      - worker_1_node_2
-      - worker_2_node_2
+      - synergos_mq
       - synergos_logger
+      - synergos_worker_1_node_2
+      - synergos_worker_2_node_2
     deploy:
       restart_policy:
         condition: on-failure
         max_attempts: 20
     networks:
-      synergos:
+      synergos_cluster:
         ipv4_address: 172.20.0.6
 
-  worker_1_node_2:
+  synergos_worker_1_node_2:
     build:
       context: ./synergos_worker
       dockerfile: Dockerfile
     image: synergos_worker:syncluster
-    container_name: worker_1_node_2
-    command: --logging_variant graylog 172.20.0.14 9100
+    container_name: sync_worker_1_n2
+    command: -i sync_worker_1_n2 -l graylog 172.20.0.14 9400 -r 5 --cpus 2
     volumes:
       - ./datasets/:/worker/data
       - ./outputs/worker_1_outputs/:/worker/outputs
@@ -147,16 +141,16 @@ services:
     depends_on:
       - synergos_logger
     networks:
-      synergos:
+      synergos_cluster:
         ipv4_address: 172.20.0.7
 
-  worker_2_node_2:
+  synergos_worker_2_node_2:
     build:
       context: ./synergos_worker
       dockerfile: Dockerfile
     image: synergos_worker:syncluster
-    container_name: worker_2_node_2
-    command: --logging_variant graylog 172.20.0.14 9100
+    container_name: sync_worker_2_n2
+    command: -i sync_worker_2_n2 -l graylog 172.20.0.14 9400 -r 5 --cpus 2
     volumes:
       - ./datasets/:/worker/data
       - ./outputs/worker_2_outputs/:/worker/outputs
@@ -166,63 +160,63 @@ services:
     depends_on:
       - synergos_logger
     networks:
-      synergos:
+      synergos_cluster:
         ipv4_address: 172.20.0.8
 
   #######################
   # Optional Components #
   #######################
 
-  synui_track:
-    build:
-      context: ./synergos_ui/synui_track
-      dockerfile: Dockerfile_track
-    image: synergos_ui:track
-    ports:
-      - 4002:4000
-    depends_on:
-      - ttp_1
-      - ttp_2
-    networks:
-      synergos:
-       ipv4_address: 172.20.0.9
-
-  synui_view:
-    build:
-      context: ./synergos_ui
-      dockerfile: ./synui_view/Dockerfile_view
-    image: synergos_ui:view
-    environment:
-      TRACK_HOST: localhost
-      TRACK_PORT: 4002
-    ports:
-      - 4001:4000
-    depends_on:
-      - synui_track
-    networks:
-      synergos:
-       ipv4_address: 172.20.0.10
-
-  synui_nav:
+  synergos_ui_nav:
     build:
       context: ./synergos_ui/synui_nav
       dockerfile: Dockerfile_nav
     image: synergos_ui:nav
+    container_name: sync_synui_nav
     environment:
       VIEW_HOST: localhost
       VIEW_PORT: 4001
     ports:
       - 4000:4000
     depends_on:
-      - synui_view
+      - synergos_ui_view
     networks:
-      synergos:
-       ipv4_address: 172.20.0.11
+      synergos_cluster:
+        ipv4_address: 172.20.0.9
+
+  synergos_ui_view:
+    build:
+      context: ./synergos_ui
+      dockerfile: ./synui_view/Dockerfile_view
+    image: synergos_ui:view
+    container_name: sync_synui_view
+    environment:
+      TRACK_HOST: localhost
+      TRACK_PORT: 4002
+    ports:
+      - 4001:4000
+    depends_on:
+      - synergos_ui_track
+    networks:
+      synergos_cluster:
+        ipv4_address: 172.20.0.10
+
+  synergos_ui_track:
+    build:
+      context: ./synergos_ui/synui_track
+      dockerfile: Dockerfile_track
+    image: synergos_ui:track
+    container_name: sync_synui_track
+    ports:
+      - 4002:4000
+    networks:
+      synergos_cluster:
+        ipv4_address: 172.20.0.11
 
   mongo:
     image: mongo:4.2
     networks:
-      synergos:
+      synergos_cluster:
        ipv4_address: 172.20.0.12
 
   # Elasticsearch: https://www.elastic.co/guide/en/elasticsearch/reference/6.x/docker.html
@@ -241,13 +235,13 @@ services:
         soft: 65536
         hard: 65536
     networks:
-      synergos:
+      synergos_cluster:
        ipv4_address: 172.20.0.13
 
   # Graylog: https://hub.docker.com/r/graylog/graylog/
   synergos_logger:
     image: graylog/graylog:4.0
-    container_name: synergos_logger
+    container_name: sync_logger
     environment:
       # CHANGE ME (must be at least 16 characters)!
       - GRAYLOG_PASSWORD_SECRET=somepasswordpepper
@@ -256,10 +250,6 @@ services:
       - GRAYLOG_HTTP_PUBLISH_URI=http://172.20.0.14:9000/
       # Fix for Graylog-ES detection issue: https://github.com/Graylog2/graylog2-server/issues/9550
       - GRAYLOG_ELASTICSEARCH_VERSION=7
-    restart: always
-    networks:
-      synergos:
-        ipv4_address: 172.20.0.14
     ports:
       # Graylog web interface and REST API
       - 9000:9000
@@ -286,43 +276,50 @@ services:
     volumes:
       - ./synergos_logger/custom/config/:/usr/share/graylog/data/config/
       - ./synergos_logger/custom/contentpacks/:/usr/share/graylog/data/contentpacks/
-
-  synergos_mq:
-    build:
-      context: ./synergos_manager
-      dockerfile: Dockerfile
-    image: synergos_mq:syncluster
-    container_name: synergos_mq
-    ports:
-      - 15672:15672
-      - 5672:5672
+    depends_on:
+      - mongo
+      - elasticsearch
+    restart: always
     networks:
-      synergos:
-        ipv4_address: 172.20.0.15
-    healthcheck:
-      test: ["CMD", "rabbitmqctl", "status"]
-      interval: 5s
-      timeout: 20s
-      retries: 5
+      synergos_cluster:
+        ipv4_address: 172.20.0.14
 
   synergos_mlops:
     build:
       context: ./synergos_mlops
       dockerfile: Dockerfile
     image: synergos_mlops:syncluster
-    container_name: synergos_mlops
+    container_name: sync_mlops
     environment: 
-      - MLFLOW_TRACKING_URI=http://172.20.0.16:5500
+      - MLFLOW_TRACKING_URI=http://172.20.0.15:5500
     ports:
       - 5500:5500
     volumes:
       - /home/aisg/Desktop/synergos_demos/mlflow_test/:/mlflow
     networks:
-      synergos:
+      synergos_cluster:
+        ipv4_address: 172.20.0.15
+
+  synergos_mq:
+    build:
+      context: ./synergos_manager
+      dockerfile: Dockerfile
+    image: synergos_mq:syncluster
+    container_name: sync_mq
+    ports:
+      - 15672:15672
+      - 5672:5672
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 20s
+      retries: 5
+    networks:
+      synergos_cluster:
         ipv4_address: 172.20.0.16
 
 networks:
-  synergos:
+  synergos_cluster:
     ipam:
       driver: default
       config:

@@ -47,8 +47,10 @@ docker-compose -f docker-compose-synbasic.yml up            # with no changes
 docker-compose -f docker-compose-synbasic.yml down
 ```
 
+> All Synergos Cluster components will be hosted on a local docker subnet of `"172.18.0.X"` called `"synergos_basic"`.<br>Please make sure that these addresses are accessible at time of simulation!
+
 | Name | Service | Component | Host | Internal Port(s) | External Port(s) |
-| ---- | ------- | --------- | ---- | ------------- | ------------- |
+| ---- | ------- | --------- | ---- | ---------------- | ---------------- |
 | `synb_ttp` | `synergos_ttp_basic` | synergos_ttp | `172.18.0.2` | `5000 (command port)`<br>`8020 (data port)` | `5000`<br>`8020` |
 | `synb_worker_1` | `synergos_worker_1` | synergos_worker | `172.18.0.3` | `5000 (command port)`<br>`8020 (data port)` | `5001`<br>`8021` |
 | `synb_worker_2` | `synergos_worker_2` | synergos_worker | `172.18.0.4` | `5000 (command port)`<br>`8020 (data port)` | `5002`<br>`8022` |
@@ -56,11 +58,11 @@ docker-compose -f docker-compose-synbasic.yml down
 | `synb_synui_view` | `synergos_ui_view` | synergos_ui | `172.18.0.6` | `4000 (main port)` | `4001` |
 | `synb_synui_track` | `synergos_ui_track` | synergos_ui | `172.18.0.7` | `4000 (main port)` | `4002` |
 
----
+<br><br>
 
 ### B. Synergos Plus 
 
-![Synergos Components](./docs/images/synplus_setup.png)
+![Synergos Plus Components](./docs/images/synplus_setup.png)
 
 *Setting up Synergos Cluster for complex workloads*
 
@@ -74,11 +76,22 @@ docker-compose -f docker-compose-synplus.yml up            # with no changes
 docker-compose -f docker-compose-synplus.yml down
 ```
 
+> All Synergos Cluster components will be hosted on a local docker subnet of `"172.19.0.X"` called `"synergos_plus"`.<br>Please make sure that these addresses are accessible at time of simulation!
+
 | Name | Service | Component | Host | Internal Port(s) | External Port(s) |
-| ---- | ------- | --------- | ---- | ------------- | ------------- |
-| `ttp` | `ttp_basic` | synergos_ttp | `172.18.0.2` | `5000 (command port)`<br>`8020 (data port)` | `5000`<br>`8020` |
-| `worker_1` | `worker_1` | synergos_worker | `172.18.0.3` | `5000 (command port)`<br>`8020 (data port)` | `5001`<br>`8021` |
-| `worker_2` | `worker_2` | synergos_worker | `172.18.0.4` | `5000 (command port)`<br>`8020 (data port)` | `5002`<br>`8022` |
+| ---- | ------- | --------- | ---- | ---------------- | ---------------- |
+| `synp_ttp` | `synergos_ttp_basic` | synergos_ttp | `172.19.0.2` | `5000 (command port)`<br>`8020 (data port)` | `5000`<br>`8020` |
+| `synp_worker_1` | `synergos_worker_1` | synergos_worker | `172.19.0.3` | `5000 (command port)`<br>`8020 (data port)` | `5001`<br>`8021` |
+| `synp_worker_2` | `synergos_worker_2` | synergos_worker | `172.19.0.4` | `5000 (command port)`<br>`8020 (data port)` | `5002`<br>`8022` |
+| `synp_synui_nav` | `synergos_ui_nav` | synergos_ui | `172.19.0.5` | `4000 (main port)` | `4000` |
+| `synp_synui_view` | `synergos_ui_view` | synergos_ui | `172.19.0.6` | `4000 (main port)` | `4001` |
+| `synp_synui_track` | `synergos_ui_track` | synergos_ui | `172.19.0.7` | `4000 (main port)` | `4002` |
+| `mongo` | `mongo` | synergos_logger | `172.19.0.8` | default | - |
+| `elasticsearch` | `elasticsearch` | synergos_logger | `172.19.0.9` | default | - |
+| `synp_logger` | `synergos_logger` | synergos_logger | `172.19.0.10` | `9000 (main port)`<br>`9000 (ui port)`<br>`9100 (sysmetrics port)`<br>`9200 (director port)`<br>`9300 (ttp port)`<br>`9400 (worker port)` | `9000`<br>`9000`<br>`9100`<br>`9200`<br>`9300`<br>`9400` |
+| `synp_mlops` | `synergos_mlops` | synergos_mlops | `172.19.0.11` | `5500 (main port)`<br>`5500 (ui port)` | `5500`<br>`5500` |
+
+<br><br>
 
 ### C. Synergos Cluster 
 
@@ -96,18 +109,26 @@ docker-compose -f docker-compose-syncluster.yml up            # with no changes
 docker-compose -f docker-compose-syncluster.yml down
 ```
 
-| Name | Component | Host | Port |
-| ---- | --------- | ---- | -----|
-| `director` | Synergos Director | 172.20.0.2 | 5000, 8020 |
-| `ttp_1` | Synergos TTP | 172.20.0.3 |
-| `ttp_2` | Synergos TTP | 172.20.0.6 |
-| `worker_1_node_1` | Synergos Worker ||
-| `worker_2_node_1` | Synergos Worker ||
-| `worker_1_node_2` | Synergos Worker ||
-| `worker_2_node_2` | Synergos Worker ||
-| `mq` | Synergos Manager ||
-| `logger` | Synergos Logger | |
-| `mlops` | Synergos MLOps ||
+> All Synergos Cluster components will be hosted on a local docker subnet of `"172.20.0.X"` called `"synergos_cluster"`.<br>Please make sure that these addresses are accessible at time of simulation!
+
+
+| Name | Service | Component | Host | Internal Port(s) | External Port(s) |
+| ---- | ------- | --------- | ---- | ---------------- | ---------------- |
+| `sync_director` | `synergos_director` | synergos_director | `172.20.0.2` | `5000 (command port)` | `5000` |
+| `sync_ttp_1` | `synergos_ttp_1` | synergos_ttp | `172.20.0.3` | `5000 (command port)`<br>`8020 (data port)` | `6000`<br>`9020` |
+| `sync_worker_1_n1` | `synergos_worker_1_node_1` | synergos_worker | `172.20.0.4` | `5000 (command port)`<br>`8020 (data port)` | `5001`<br>`8021` |
+| `sync_worker_2_n1` | `synergos_worker_2_node_1` | synergos_worker | `172.20.0.5` | `5000 (command port)`<br>`8020 (data port)` | `5002`<br>`8022` |
+| `sync_ttp_2` | `synergos_ttp_2` | synergos_ttp | `172.20.0.6` | `5000 (command port)`<br>`8020 (data port)` | `7000`<br>`10020` |
+| `sync_worker_1_n2` | `synergos_worker_1_node_2` | synergos_worker | `172.20.0.7` | `5000 (command port)`<br>`8020 (data port)` | `5003`<br>`8023` |
+| `sync_worker_2_n2` | `synergos_worker_2_node_2` | synergos_worker | `172.20.0.8` | `5000 (command port)`<br>`8020 (data port)` | `5004`<br>`8024` |
+| `sync_synui_nav` | `synergos_ui_nav` | synergos_ui | `172.20.0.9` | `4000 (main port)` | `4000` |
+| `sync_synui_view` | `synergos_ui_view` | synergos_ui | `172.20.0.10` | `4000 (main port)` | `4001` |
+| `sync_synui_track` | `synergos_ui_track` | synergos_ui | `172.20.0.11` | `4000 (main port)` | `4002` |
+| `mongo` | `mongo` | synergos_logger | `172.20.0.12` | default | - |
+| `elasticsearch` | `elasticsearch` | synergos_logger | `172.20.0.13` | default | - |
+| `sync_logger` | `synergos_logger` | synergos_logger | `172.20.0.14` | `9000 (main port)`<br>`9000 (ui port)`<br>`9100 (sysmetrics port)`<br>`9200 (director port)`<br>`9300 (ttp port)`<br>`9400 (worker port)` | `9000`<br>`9000`<br>`9100`<br>`9200`<br>`9300`<br>`9400` |
+| `sync_mlops` | `synergos_mlops` | synergos_mlops | `172.20.0.15` | `5500 (main port)`<br>`5500 (ui port)` | `5500`<br>`5500` |
+| `sync_mq` | `synergos_mq` | synergos_manager | `172.20.0.16` | `5672 (main port)`<br>`15672 (ui port)` | `5672`<br>`15672` |
 
 ---
 
