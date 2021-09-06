@@ -1,71 +1,211 @@
-version: '3.8'
+version: '3.5'
 
 services:
-  worker_1:
-    image: registry.aisingapore.net/fedlearn/synergos_worker:syn0.5
-    container_name: worker_1
-    command: --logging_variant graylog 127.0.0.1 9400
-    volumes:
-      - /Users/yoke/code/FL/FLData/tabular/heart_disease/data1:/worker/data
-      - /Users/yoke/code/FL/FLOutputs/heart_disease_gkt/outputs_1:/worker/outputs
 
-  worker_2:
-    image: registry.aisingapore.net/fedlearn/synergos_worker:syn0.5
-    container_name: worker_2
-    command: --logging_variant graylog 127.0.0.1 9400
-    volumes:
-      - /Users/yoke/code/FL/FLData/tabular/heart_disease/data2:/worker/data
-      - /Users/yoke/code/FL/FLOutputs/heart_disease_gkt/outputs_2:/worker/outputs
+  ###############
+  # Single Grid #
+  ###############
 
-  basic_ttp:
-    image: registry.aisingapore.net/fedlearn/synergos_ttp:syn0.7
-    command: --logging_variant graylog 127.0.0.1 9400
+  synergos_ttp_basic:
+    build:
+      context: ./synergos_ttp
+      dockerfile: Dockerfile
+      target: basic_ttp
+    image: synergos_ttp:synplus
+    container_name: synp_ttp
+    command: --logging_variant graylog 172.19.0.14 9300
     volumes:
-      - /Users/yoke/code/FL/FLOutputs/heart_disease_gkt/ttp_data:/ttp/data
-      - /Users/yoke/code/FL/FLOutputs/heart_disease_gkt/ttp_outputs:/ttp/outputs
-      - /Users/yoke/code/FL/FLOutputs/heart_disease_gkt/mlflow_test:/ttp/mlflow
+      - ./metadata/orchestrator_data/:/orchestrator/data
+      - ./metadata/mlflow_data/:/mlflow
+      - ./outputs/orchestrator_outputs/:/orchestrator/outputs
     ports:
       - 5000:5000
       - 5678:5678
       - 8020:8020
       - 8080:8080
     depends_on:
-      - worker_1
-      - worker_2
+      - synergos_logger
+      - synergos_worker_1
+      - synergos_worker_2
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 20
+    networks:
+      synergos_plus:
+        ipv4_address: 172.19.0.2
 
-  synui_track:
+  synergos_worker_1:
     build:
-      context: ./repos/synergos_ui/synui_track
-      dockerfile: Dockerfile_track
-    image: synergos_ui:track
+      context: ./synergos_worker
+      dockerfile: Dockerfile
+    image: synergos_worker:synplus
+    container_name: synp_worker_1
+    command: --logging_variant graylog 172.19.0.14 9400
+    volumes:
+      - ./datasets/:/worker/data
+      - ./outputs/worker_1_outputs/:/worker/outputs
     ports:
-      - 4002:4000
-    depends_on:
-      - basic_ttp
+      - 5001:5000
+      - 8021:8020
+    networks:
+      synergos_plus:
+        ipv4_address: 172.19.0.3
 
-  synui_view:
+  synergos_worker_2:
     build:
-      context: ./repos/synergos_ui
-      dockerfile: ./synui_view/Dockerfile_view
-    image: synergos_ui:view
-    environment:
-      TRACK_HOST: localhost
-      TRACK_PORT: 4002
+      context: ./synergos_worker
+      dockerfile: Dockerfile
+    image: synergos_worker:synplus
+    container_name: synp_worker_2
+    command: --logging_variant graylog 127.0.0.1 9400
+    volumes:
+      - ./datasets/:/worker/data
+      - ./outputs/worker_2_outputs/:/worker/outputs
     ports:
-      - 4001:4000
-    depends_on:
-      - synui_track
+      - 5002:5000
+      - 8022:8020
+    networks:
+      synergos_plus:
+        ipv4_address: 172.19.0.4
 
-  synui_nav:
+  #######################
+  # Optional Components #
+  #######################
+
+  synergos_ui_nav:
     build:
-      context: ./repos/synergos_ui/synui_nav
+      context: ./synergos_ui/synui_nav
       dockerfile: Dockerfile_nav
     image: synergos_ui:nav
+    container_name: synp_synui_nav
     environment:
       VIEW_HOST: localhost
       VIEW_PORT: 4001
     ports:
       - 4000:4000
     depends_on:
-      - synui_view
+      - synergos_ui_view
+    networks:
+      synergos_plus:
+        ipv4_address: 172.19.0.5
 
+  synergos_ui_view:
+    build:
+      context: ./synergos_ui
+      dockerfile: ./synui_view/Dockerfile_view
+    image: synergos_ui:view
+    container_name: synp_synui_view
+    environment:
+      TRACK_HOST: localhost
+      TRACK_PORT: 4002
+    ports:
+      - 4001:4000
+    depends_on:
+      - synergos_ui_track
+    networks:
+      synergos_plus:
+        ipv4_address: 172.19.0.6
+
+  synergos_ui_track:
+    build:
+      context: ./synergos_ui/synui_track
+      dockerfile: Dockerfile_track
+    image: synergos_ui:track
+    container_name: synp_synui_track
+    ports:
+      - 4002:4000
+    networks:
+      synergos_plus:
+        ipv4_address: 172.19.0.7
+
+  mongo:
+    image: mongo:4.2
+    networks:
+      synergos_plus:
+       ipv4_address: 172.19.0.8
+
+  # Elasticsearch: https://www.elastic.co/guide/en/elasticsearch/reference/6.x/docker.html
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.0
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=localhost
+      - network.host=0.0.0.0
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    networks:
+      synergos_plus:
+       ipv4_address: 172.19.0.9
+
+  # Graylog: https://hub.docker.com/r/graylog/graylog/
+  synergos_logger:
+    image: graylog/graylog:4.0
+    container_name: synp_logger
+    environment:
+      # CHANGE ME (must be at least 16 characters)!
+      - GRAYLOG_PASSWORD_SECRET=somepasswordpepper
+      # Password: admin
+      - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+      - GRAYLOG_HTTP_PUBLISH_URI=http://172.19.0.10:9000/
+      # Fix for Graylog-ES detection issue: https://github.com/Graylog2/graylog2-server/issues/9550
+      - GRAYLOG_ELASTICSEARCH_VERSION=7
+    restart: always
+    ports:
+      # Graylog web interface and REST API
+      - 9000:9000
+      # Syslog TCP
+      - 1514:1514
+      # Syslog UDP
+      - 1514:1514/udp
+      # GELF TCP
+      - 12201:12201
+      # GELF UDP
+      - 12201:12201/udp
+      # System Load Meta Tracking
+      - 9100:9100
+      - 9100:9100/udp
+      # Synergos Director Meta Tracking
+      - 9200:9200
+      - 9200:9200/udp
+      # Synergos TTP(s) Meta Tracking (Modify where necessary)
+      - 9300:9300
+      - 9300:9300/udp
+      # Synergos Worker(s) Meta Tracking (Modify where necessary)
+      - 9400:9400
+      - 9400:9400/udp
+    volumes:
+      - ./synergos_logger/custom/config/:/usr/share/graylog/data/config/
+      - ./synergos_logger/custom/contentpacks/:/usr/share/graylog/data/contentpacks/
+    networks:
+      synergos_plus:
+        ipv4_address: 172.19.0.10
+
+  synergos_mlops:
+    build:
+      context: ./synergos_mlops
+      dockerfile: Dockerfile
+    image: synergos_mlops:synplus
+    container_name: synp_mlops
+    environment: 
+      - MLFLOW_TRACKING_URI=http://172.19.0.11:5500
+    ports:
+      - 5500:5500
+    volumes:
+      - ./metadata/mlflow_data/:/mlflow
+    networks:
+      synergos_plus:
+        ipv4_address: 172.19.0.11
+
+networks:
+  synergos_plus:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.19.0.0/24"
