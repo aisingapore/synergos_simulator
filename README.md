@@ -64,7 +64,7 @@ docker-compose -f docker-compose-synbasic.yml down
 
 ![Synergos Plus Components](./docs/images/synplus_setup.png)
 
-*Setting up Synergos Cluster for complex workloads*
+*Setting up Synergos Plus for more analytical tools*
 
 ```
 # Start SynPlus grid
