@@ -1,28 +1,36 @@
-# Federated Outputs
-This is a placeholder folder to remind users that within Synergos Director, all federated outputs will be exported here, and can be accessed externally by mounting your own volumes to `"XXX:/orchestrator/outputs"`.
+# MLFlow Logs
+This is a placeholder folder to remind users that within Synergos Director/TTP, all MLFlow-related logs, parameters, metrics & artifacts will be exported here, and can be accessed externally by mounting your own volumes to `"XXX:/mlflow"`.
 
 The following files will be generated:
-- `"/<collab_id>/<project_id>/<expt_id>/<run_id>/"`
+- `"/<mlflow_expt_id>"`
   
-    A unique directory made composite keys identifying federated cycle(s) will be generated. 
+    A unique directory named using MLFLow's internal experiment indexing
   
-    - `"global_loss_history.json"`
+    - `"meta.yaml"`
 
-        JSON output recording all validation loss flucuations of the global model across all rounds .
+        Metadata describing the current MLFlow experiment
 
-    - `"global_model.pt"`
+    - `"/<mlflow_run_id>"`
 
-        PyTorch model weights for the final global model after training
+        A unique directory named using MLFlow's internal run indexing
 
-    - `"local_loss_history_<participant_id>.json"`
+        - `"meta.yml"`
 
-        JSON output recording all validation loss flucuations of the specified participant's local model across all rounds.
+            Metadata describing the current MLFlow run
 
-    - `"local_model_<participant_id>.pt"`
+        - `"/artifacts/*"`
 
-        PyTorch model weights for the participant's final local model after training
+            All cached files generated from a federated cycle
 
-    - `"checkpoints/<round_idx>/<epoch_idx>/"`
+        - `"/metrics/*"`
 
-        Directory containing all intermediary results at per round per epoch, with artifacts similar to the aforementioned file structure above.
- 
+            All computed metrics generated from a federated cycle
+
+        - `"/params/*"`
+
+            All parameters used to configure aforementioned federated cycle
+
+        - `"/tags/*"`
+
+            All tags used to classify/partition generated metadata
+    

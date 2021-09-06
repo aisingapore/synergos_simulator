@@ -1,5 +1,5 @@
 # Federated Outputs
-This is a placeholder folder to remind users that within Synergos Director, all federated outputs will be exported here, and can be accessed externally by mounting your own volumes to `"XXX:/orchestrator/outputs"`.
+This is a placeholder folder to remind users that within Synergos Director/TTP, all federated outputs will be exported here, and can be accessed externally by mounting your own volumes to `"XXX:/orchestrator/outputs"`.
 
 The following files will be generated:
 - `"/<collab_id>/<project_id>/<expt_id>/<run_id>/"`
