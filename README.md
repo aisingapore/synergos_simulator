@@ -7,6 +7,7 @@ Welcome to ***Synergos Simulator***!
 Your all-in-one toolbox for simulating a Synergos network :)
 
 ---
+<br>
 
 ## Installation
 
@@ -28,6 +29,7 @@ pip install -e ./synergos
 ```
 
 ---
+<br>
 
 ## Simulated Deployments
 
@@ -95,7 +97,7 @@ docker-compose -f docker-compose-synplus.yml down
 
 ### C. Synergos Cluster 
 
-![Synergos Components](./docs/images/syncluster_setup.png)
+![Synergos Cluster Components](./docs/images/syncluster_setup.png)
 
 *Setting up Synergos Cluster for complex workloads*
 
@@ -131,13 +133,30 @@ docker-compose -f docker-compose-syncluster.yml down
 | `sync_mq` | `synergos_mq` | synergos_manager | `172.20.0.16` | `5672 (main port)`<br>`15672 (ui port)` | `5672`<br>`15672` |
 
 ---
+<br>
 
 ## Interactions
+Ok, you have now deployed your Synergos grid, what's next? Interact with it of course!
 
-### A. Via Synergos UI
+There are 2 main ways to use Synergos - Synergos Portal or Synergos Driver
 
+
+### A. Via Synergos Portal
+
+![UI Homepage](./docs/images/ui_overview.png)
+
+![UI Orchestrator Workflow](./docs/images/ui_orchestrator_workflow.png)
+
+![UI Participant Workflow](./docs/images/ui_participant_workflow.png)
+
+<br><br>
 
 ### B. Via Synergo Driver (i.e. Jupyter notebooks)
+
+For advanced users who would rather script things out, Synergos comes with an interfacing driver package to facilitate your interactions with the deployed Synergos grid(s). Here in the Synergos Simulator, we have various consolidated
+notebooks to walk you through the entire federated cycle, regardless of your deployed configuration.
+
+To start off, we will launch a jupyter server in Synergos Simulator.
 
 ```
 # Ensure virtual environment is active
@@ -150,16 +169,54 @@ pip install jupyter
 jupyter notebook
 ```
 
+You should see this page popup on your browser.
 
+![Jupyter Homepage](./docs/images/jupyter_homepage.png)
+
+*Running the Jupyter server mounted on Synergos Simulator*
+
+> If you are seeing a different set of directories, you are most likely in the wrong folder! Navigate to`"/path/to/synergos_simulator"` and relaunch your jupyter server.
+
+> If no popup is prompted, not to worry! Simply copy out one of the URLs as displayed on your terminal and paste it in your browser, as seen in the image below.
+
+![Jupyter Manual start](./docs/images/jupyter_manual_start.png)
+
+Next, navigate to the datasets directory. This where all self-contained examples are kept. A range of curated examples for handling federated workflows for data of different datatypes can be found here.
+
+![Jupyter Datasets](./docs/images/jupyter_datasets.png)
+
+*Curated examples for handling federated workflows*
+
+Click on a dataset of your interest. Inside each folder, there are 3 jupyter notebooks, each corresponding to a different Synergos configuration (i.e. Synbasic, Synplus or Syncluster).
+
+![Jupyter Notebooks](./docs/images/jupyter_notebooks.png)
+
+*Running the Jupyter server mounted on Synergos Simulator*
+
+Click on any one of them to start your journey!
 
 ---
+<br>
 
 ### Cleaning Up
+
+We all make mistakes, and that's fine!
+
+Here in the Synergos Simulator, we have a reset "button" to clear all cache generated from the various procedures. Simply run our `"cleanup"` script to start afresh!
 
 ```
 # Grant permission to run cleanup.sh
 chmod +x ./cleanup.sh
 
 # Perform cleanup!
-./cleanup.sh
+./cleanup.sh        # shortened list of targets for removal
+OR
+./cleanup.sh -V     # enumerates out all targets for removal
 ```
+> Note: You should always clean up after you have encountered an error across the grid
+
+---
+
+That's all 
+
+For more in-depth information, please refer to our [guide](https://docs.synergos.ai).
