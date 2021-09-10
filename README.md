@@ -13,7 +13,7 @@ Your all-in-one toolbox for simulating a Synergos network :)
 
 ```
 # Download source repository
-git clone https://gitlab.int.aisingapore.org/aims/federatedlearning/synergos_simulator.git
+git clone https://github.com/aimakerspace/synergos_simulator.git
 cd ./synergos_simulator
 
 # Initialize & update all modules & submodules
@@ -138,18 +138,50 @@ docker-compose -f docker-compose-syncluster.yml down
 ## Interactions
 Ok, you have now deployed your Synergos grid, what's next? Interact with it of course!
 
-There are 2 main ways to use Synergos - Synergos Portal or Synergos Driver
+There are 2 main ways to use Synergos - **Synergos Portal** or **Synergos Driver**
 
 
 ### A. Via Synergos Portal
 
-![UI Homepage](./docs/images/ui_overview.png)
+All 3 stages of a federated cycle (i.e. *Registration*, *Training* and *Evaluation*) are initializable from Synergos Portal
 
-![UI Orchestrator Workflow](./docs/images/ui_orchestrator_workflow.png)
+![Synergos Orchestrator interactions](./docs/images/ui_orchestrator_workflow.png)
 
-![UI Participant Workflow](./docs/images/ui_participant_workflow.png)
+*Orchestrator Interactions*
 
-<br><br>
+Orchestrators will interact with all paths supported on the `Orchestrator` tab, and is independent from that of participants' interactions.
+
+Orchestrators will be able to:
+- Manage collaboration metadata
+- Manage project metadata
+- Manage experiment metadata
+- Manage run metadata
+- Submit training cycles
+- Submit optimization cycles
+
+![Synergos Participant interactions](./docs/images/ui_participant_workflow.png)
+
+*Participant Interactions*
+
+Participants will interact with all paths supported on the `Participant` tab, and is independent from that of participants' interactions.
+
+Participants will be able to:
+- Manage their profiles
+- Manage their project registrations
+- Submit inference requests
+
+![Synergos Command station](./docs/images/ui_commandStation.png)
+
+*Command Station*
+
+Lastly, all components deployed can be tracked and easily accessed within the `Command Station`!
+> Note: Each window is resizable, movable and locking. So feel free to re-arrange and customize your views!
+
+Simply fill in the blanks with the fixed addresses & port mappings corresponding to the `Synergos` grid configuration deployed! 
+
+For more in-depth information, please refer to our [UI guide](https://docs.synergos.ai/Portal.html).
+
+<br>
 
 ### B. Via Synergo Driver (i.e. Jupyter notebooks)
 
