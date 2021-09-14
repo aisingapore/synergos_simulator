@@ -67,7 +67,7 @@ services:
       - ./datasets/:/worker/data
       - ./outputs/worker_1_outputs/:/worker/outputs
     ports:
-      - 5002:5000
+      - 5001:5000
       - 8021:8020
     depends_on:
       - synergos_logger
@@ -86,7 +86,7 @@ services:
       - ./datasets/:/worker/data
       - ./outputs/worker_2_outputs/:/worker/outputs
     ports:
-      - 5003:5000
+      - 5002:5000
       - 8022:8020
     depends_on:
       - synergos_logger
@@ -136,7 +136,7 @@ services:
       - ./datasets/:/worker/data
       - ./outputs/worker_1_outputs/:/worker/outputs
     ports:
-      - 5004:5000
+      - 5003:5000
       - 8023:8020
     depends_on:
       - synergos_logger
@@ -155,7 +155,7 @@ services:
       - ./datasets/:/worker/data
       - ./outputs/worker_2_outputs/:/worker/outputs
     ports:
-      - 5005:5000
+      - 5004:5000
       - 8024:8020
     depends_on:
       - synergos_logger
