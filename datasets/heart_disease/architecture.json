@@ -1,0 +1,12 @@
+[
+    {
+        "activation": "sigmoid",
+        "is_input": true,
+        "l_type": "Linear",
+        "structure": {
+            "bias": true,
+            "in_features": 13,
+            "out_features": 1 
+        }
+    }
+]

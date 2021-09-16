@@ -1,0 +1,12 @@
+[
+    {
+        "activation": "",
+        "is_input": true,
+        "l_type": "Linear",
+        "structure": {
+            "bias": true,
+            "in_features": 28,
+            "out_features": 1
+        }
+    }
+]
