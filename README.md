@@ -179,6 +179,12 @@ Lastly, all components deployed can be tracked and easily accessed within the `C
 
 Simply fill in the blanks with the fixed addresses & port mappings corresponding to the `Synergos` grid configuration deployed! 
 
+![Jupyter Notebooks](./docs/images/jupyter_notebooks.png)
+
+*Uploading pre-configured examples to Synergos Portal*
+
+We also have pre-configured `architecture.json`, `hyperparameters.json` & `ranges.json` stored alongside each dataset which you can use as uploads for the relevant examples to Synergos Portal!
+
 For more in-depth information, please refer to our [UI guide](https://docs.synergos.ai/Portal.html).
 
 <br>
