@@ -156,10 +156,12 @@ driver.tags.create(
 
 # 2A. Perform multiple feature alignment to dynamically configure datasets and models for cross-grid compatibility
 
-driver.alignments.create(collab_id='test_collaboration',
-                         project_id="test_project",
-                         verbose=False,
-                         log_msg=False)
+driver.alignments.create(
+    collab_id='test_collaboration',
+    project_id="test_project",
+    verbose=False,
+    log_msg=False
+)
 
 
 # 2B. Trigger training across the federated grid

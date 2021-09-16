@@ -1,0 +1,22 @@
+[
+    {
+        "activation": "sigmoid",
+        "is_input": true,
+        "l_type": "Linear",
+        "structure": {
+            "bias": true,
+            "in_features": 64,
+            "out_features": 32
+        }
+    },
+    {
+        "activation": "softmax",
+        "is_input": false,
+        "l_type": "Linear",
+        "structure": {
+            "bias": true,
+            "in_features": 32,
+            "out_features": 16
+        }
+    }
+]
